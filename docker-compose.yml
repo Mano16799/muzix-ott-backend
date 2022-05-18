@@ -1,0 +1,98 @@
+version: "3.3"
+services:
+  mysqlservice:
+    image: mysql:5.5
+    ports:
+      - "3306:3306"
+    container_name: mysql-container-1
+    network_mode: host
+    hostname: localhost
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_USERNAME: root@localhost
+      MYSQL_PASSWORD: root123
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+  mongodbservice:
+    image: mongo:latest
+    container_name: mongo-container-1
+    network_mode: host
+    hostname: localhost
+    ports:
+      - "27017:27017"
+  UserAuthenticationService:
+    container_name: user-authentication-service
+    build: UserAuthenticationService/
+    hostname: localhost
+    network_mode: host
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mysqlservice
+    restart: always
+  MovieServiceApplication:
+    container_name: movie-service
+    build: MovieServiceApplication/
+    hostname: localhost
+    network_mode: host
+    ports:
+      - "8082:8082"
+    depends_on:
+      - mongodbservice
+    restart: always
+  FavouriteServiceApplication:
+    container_name: favourite-service
+    build: FavouriteServiceApplication/
+    hostname: localhost
+    network_mode: host
+    ports:
+      - "8084:8084"
+    depends_on:
+      - mongodbservice
+    restart: always
+  SearchServiceApplication:
+    container_name: search-service
+    build: SearchServiceApplication/
+    hostname: localhost
+    network_mode: host
+    ports:
+      - "8083:8083"
+    depends_on:
+      - mongodbservice
+    restart: always
+  SpringCloudAPIGateway:
+    image: cloud-api-service
+    build: SpringCloudAPIGateway/
+    restart: always
+    network_mode: host
+    ports:
+      - "9000:9000"
+    environment:
+      API_GATEWAY_PORT: 9000
+      EUREKA_SERVER_IP: localhost
+      EUREKA_SERVER_PORT: 8761
+    depends_on:
+      - eurekaServer
+  eurekaServer:
+    image: eureka_service
+    build: EurekaServer/
+    restart: always
+    network_mode: host
+    environment:
+      EUREKA_SERVER_PORT: 8761
+    ports:
+      - "8761:8761"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

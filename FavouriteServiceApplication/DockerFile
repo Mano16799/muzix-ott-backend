@@ -1,0 +1,7 @@
+FROM openjdk:11-jre-slim
+EXPOSE 8084
+WORKDIR usr/src
+ENV MONGO_DATABASE=movies_db
+ENV MONGO_URL=mongodb://localhost:27017/movies_db
+ADD ./target/FavouriteServiceApplication-0.0.1.jar /usr/src/FavouriteServiceApplication-0.0.1.jar
+ENTRYPOINT ["java","-jar","FavouriteServiceApplication-0.0.1.jar"]
